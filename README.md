@@ -1,6 +1,6 @@
 # Nearby-Places-App
-Android App which shows nearby places according to user's location and their details.
-ScreenShots:
+Android App which shows nearby places according to user's location and their details.<br>
+## ScreenShots:
 
 
 
