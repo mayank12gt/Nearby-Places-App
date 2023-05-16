@@ -52,30 +52,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private ActivityMapsBinding binding;
     FusedLocationProviderClient client;
     Location currentLocation;
-    List<NearbyPlace> nearbyPlaces;
-    //PlacesClient placesClient;
-
-
-    //private static final int M_MAX_ENTRIES = 5;
-//    private String[] likelyPlaceNames;
-//    private String[] likelyPlaceAddresses;
-//    private List[] likelyPlaceAttributions;
-//    private LatLng[] likelyPlaceLatLngs;
-
     MapsActivityViewModel viewModel;
-
+    MarkerDetailsFragment markerDetailsBtmSheet;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         binding = ActivityMapsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        nearbyPlaces = new ArrayList<>();
+
 
         viewModel = new ViewModelProvider(this).get(MapsActivityViewModel.class);
         client = LocationServices.getFusedLocationProviderClient(this);
-        //        Places.initialize(getApplicationContext(), BuildConfig.MAPS_API_KEY);
-//        placesClient = Places.createClient(this);
 
         getLocation();
 
@@ -99,6 +87,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         LatLng myLocation = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
         mMap.setMyLocationEnabled(true);
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myLocation,15));
+
+
+        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(@NonNull Marker marker) {
+                //Toast.makeText(MapsActivity.this, marker.getTitle(), Toast.LENGTH_SHORT).show();
+                markerDetailsBtmSheet = new MarkerDetailsFragment((NearbyPlace) marker.getTag());
+
+                markerDetailsBtmSheet.show(getSupportFragmentManager(), markerDetailsBtmSheet.getTag());
+
+
+                return true;
+            }
+        });
 
 
     }
@@ -148,63 +150,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
     public void shownearbyLocations() {
-//        List<Place.Field> placeFields = Arrays.asList(Place.Field.NAME, Place.Field.ADDRESS,
-//                Place.Field.LAT_LNG);
-//
-//        // Use the builder to create a FindCurrentPlaceRequest.
-//        FindCurrentPlaceRequest request =
-//                FindCurrentPlaceRequest.newInstance(placeFields);
-//        if (ContextCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-//
-//
-//            @SuppressLint("MissingPermission") Task<FindCurrentPlaceResponse> placeResult =
-//                    placesClient.findCurrentPlace(request);
-//            placeResult.addOnCompleteListener(new OnCompleteListener<FindCurrentPlaceResponse>() {
-//                @Override
-//                public void onComplete(@NonNull Task<FindCurrentPlaceResponse> task) {
-//                    if (task.isSuccessful() && task.getResult() != null) {
-//                        FindCurrentPlaceResponse likelyPlaces = task.getResult();
-//
-//                        // Set the count, handling cases where less than 5 entries are returned.
-//                        int count;
-//                        if (likelyPlaces.getPlaceLikelihoods().size() < M_MAX_ENTRIES) {
-//                            count = likelyPlaces.getPlaceLikelihoods().size();
-//                        } else {
-//                            count = M_MAX_ENTRIES;
-//                        }
-//
-//                        int i = 0;
-//                        likelyPlaceNames = new String[count];
-//                        likelyPlaceAddresses = new String[count];
-//                        likelyPlaceAttributions = new List[count];
-//                        likelyPlaceLatLngs = new LatLng[count];
-//
-//                        for (PlaceLikelihood placeLikelihood : likelyPlaces.getPlaceLikelihoods()) {
-//                            // Build a list of likely places to show the user.
-//                            likelyPlaceNames[i] = placeLikelihood.getPlace().getName();
-//                            likelyPlaceAddresses[i] = placeLikelihood.getPlace().getAddress();
-//                            likelyPlaceAttributions[i] = placeLikelihood.getPlace()
-//                                    .getAttributions();
-//                            likelyPlaceLatLngs[i] = placeLikelihood.getPlace().getLatLng();
-//
-//                            i++;
-//                            if (i > (count - 1)) {
-//                                break;
-//                            }
-//                        }
-//
-//                        // Show a dialog offering the user the list of likely places, and add a
-//                        // marker at the selected place.
-//                        Toast.makeText(MapsActivity.this, "hello", Toast.LENGTH_SHORT).show();
-//                        Toast.makeText(MapsActivity.this, likelyPlaceNames[0], Toast.LENGTH_SHORT).show();
-//                    } else {
-//                        Log.d("TAG", "Exception: %s", task.getException());
-//                    }
-//                }
-//            });
-//        }
-
-viewModel.getNearbyPlaces("28.565944,77.250502",1500,BuildConfig.MAPS_API_KEY,"")
+        String loc=String.valueOf( currentLocation.getLatitude()+","+currentLocation.getLongitude());
+        Toast.makeText(this, loc, Toast.LENGTH_SHORT).show();
+        viewModel.getNearbyPlaces(loc,1500,BuildConfig.MAPS_API_KEY,"")
         .observe(this, new Observer<NearbySearchResponse>() {
             @Override
             public void onChanged(NearbySearchResponse nearbySearchResponse) {
@@ -213,15 +161,15 @@ viewModel.getNearbyPlaces("28.565944,77.250502",1500,BuildConfig.MAPS_API_KEY,""
 
                       for (NearbyPlace place: nearbySearchResponse.getResults()) {
 
-                          nearbyPlaces.add(place);
+
 
 
                           LatLng nearbyLocation = new LatLng(place.getGeometry().getLocation().getLat(),
                                   place.getGeometry().getLocation().getLng());
                          Log.d("Loc", String.valueOf(place.getName()+place.getGeometry().getLocation().getLat()+place.getGeometry().getLocation().getLng()));
-//                          Toast.makeText(MapsActivity.this,String.valueOf(place.getGeometry().getLocation().getLatitude()), Toast.LENGTH_SHORT).show();
-                        MarkerOptions markerOptions = new MarkerOptions().position(nearbyLocation);
-                        mMap.addMarker(markerOptions);
+//
+                        MarkerOptions markerOptions = new MarkerOptions().position(nearbyLocation).title(place.getName());
+                        mMap.addMarker(markerOptions).setTag(place);
 
                       }
 
@@ -232,6 +180,8 @@ viewModel.getNearbyPlaces("28.565944,77.250502",1500,BuildConfig.MAPS_API_KEY,""
 
 
     }
+
+
 
 }
 

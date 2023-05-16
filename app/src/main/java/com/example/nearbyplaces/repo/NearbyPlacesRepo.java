@@ -1,6 +1,7 @@
 package com.example.nearbyplaces.repo;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
@@ -37,4 +38,5 @@ public class NearbyPlacesRepo {
         });
         return mutableLiveData;
     }
+
 }

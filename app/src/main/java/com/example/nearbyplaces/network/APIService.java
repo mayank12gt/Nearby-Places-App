@@ -11,5 +11,5 @@ public interface APIService {
     Call<NearbySearchResponse> getNearbyPlaces(@Query("location") String location,
                                                @Query("radius") int radius,
                                                @Query("key") String key,
-                                               @Query("pagetoken") String pagetoken);
+                                                                @Query("pagetoken") String pagetoken);
 }
