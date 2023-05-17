@@ -15,7 +15,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:minHeight="600dp"
+        android:minHeight="500dp"
+
 
         tools:context=".MarkerDetailsFragment">
 
@@ -35,7 +36,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:fontFamily="@font/poppins_medium"
+            android:fontFamily="@font/poppins_semibold"
             android:text="@{place.name}"
             android:textColor="@color/black"
             android:textSize="24sp"
@@ -68,7 +69,18 @@
             app:layout_constraintTop_toTopOf="@id/rating_txt"
             app:layout_constraintBottom_toBottomOf="@id/rating_txt"/>
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:id="@+id/rating_num"
 
+            android:text="@{`(`+place.userRatingsTotal+`)`}"
+            app:layout_constraintStart_toEndOf="@id/place_rating"
+            app:layout_constraintTop_toTopOf="@id/place_rating"
+            android:layout_marginStart="12dp"
+            android:fontFamily="@font/poppins_medium"
+            android:textSize="22sp"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -92,15 +104,22 @@
             android:maxWidth="300dp"
 
             android:text="@{place.vicinity}"
-            android:textSize="22sp"
 
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/place_addr_txt"
-            app:layout_constraintTop_toTopOf="@id/place_addr_txt"
             android:textColor="@color/black"
-            />
+            android:textSize="22sp"
+            app:layout_constraintStart_toEndOf="@id/place_addr_txt"
+            app:layout_constraintTop_toTopOf="@id/place_addr_txt" />
 
 
-
+        <com.makeramen.roundedimageview.RoundedImageView
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:id="@+id/place_image"
+                app:riv_corner_radius="6dp"
+            app:layout_constraintTop_toBottomOf="@id/place_addr"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_margin="12dp"
+            bind:imageURL="@{place.photos.get(0).photoReference}"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
