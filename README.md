@@ -10,9 +10,10 @@ Implemented Location Permission Access, marked user location on the map, marked 
 https://github.com/mayank12gt/Nearby-Places-App/assets/96809211/e0fcd5d9-4895-4715-aa49-5eb62484d674
 
 
+
 ## ScreenShots:
 
-![merge_from_ofoct (4)](https://github.com/mayank12gt/Nearby-Places-App/assets/96809211/5deccbf1-6981-4b8a-8879-c8982a24cf9c)
+![WhatsApp Image 2023-05-20 at 12 40 45 AM](https://github.com/mayank12gt/Nearby-Places-App/assets/96809211/4c265a70-f4a8-446d-8160-a3e3324128d4)
 
 
 
