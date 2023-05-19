@@ -4,12 +4,22 @@ Implemented Location Permission Access, marked user location on the map, marked 
 The search radius is 1500 metres.<br>
 Filter places and get direction features to be implemented very soon
 
+
+
+
+
+
 ## Demo Video
 
 
-https://github.com/mayank12gt/Nearby-Places-App/assets/96809211/cdc89b49-e249-4859-bdbc-99c6256456ab
+
+
+
+https://github.com/mayank12gt/Nearby-Places-App/assets/96809211/67119cd0-3571-47d0-8b99-b9111558e670
+
 
 
 ## ScreenShots:
 
-![Screenshots](https://github.com/mayank12gt/Nearby-Places-App/assets/96809211/d4ddf86c-c791-423f-bb49-8ee880871c60)
+
+![merge_from_ofoct (2)](https://github.com/mayank12gt/Nearby-Places-App/assets/96809211/cfcffa5d-b147-4787-9ce4-df615344f463)
