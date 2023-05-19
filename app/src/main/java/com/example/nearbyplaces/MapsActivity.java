@@ -5,6 +5,7 @@ package com.example.nearbyplaces;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -15,19 +16,29 @@ import androidx.lifecycle.ViewModelProvider;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.nearbyplaces.model.NearbyPlace;
 import com.example.nearbyplaces.model.NearbySearchResponse;
 import com.example.nearbyplaces.viewmodel.MapsActivityViewModel;
+import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResponse;
+import com.google.android.gms.location.SettingsClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -39,6 +50,8 @@ import com.example.nearbyplaces.databinding.ActivityMapsBinding;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.net.PlacesClient;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,8 +73,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     List<Marker> markers;
     String next_page_token="";
 
-    AppCompatTextView filter_btn;
-    AppCompatTextView more_results;
+    Button filter_btn;
+   Button more_results;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,6 +84,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         filter_btn = binding.filterBtn;
         more_results = binding.more;
         markers = new ArrayList<>();
+        Places.initialize(getApplicationContext(), BuildConfig.MAPS_API_KEY);
+
+        PlacesClient placesClient = Places.createClient(this);
+
+
 
 
         more_results.setOnClickListener(new View.OnClickListener() {
@@ -100,7 +118,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private void showFilterDialog() {
-        FilterDialogFragment dialogFragment = new FilterDialogFragment();
+        FilterDialogFragment dialogFragment = new FilterDialogFragment(Searchradius,est_type);
 
       dialogFragment.show(getSupportFragmentManager(), dialogFragment.getTag());
 
@@ -156,6 +174,29 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         loadMap();
                     }
                     else {
+                        AlertDialog.Builder alertDialog = new AlertDialog.Builder(MapsActivity.this);
+                        alertDialog.setTitle("Location setting!");
+                        alertDialog.setMessage("Location is not enabled, Do you want to go to settings menu to enable location?");
+                        alertDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                                MapsActivity.this.startActivity(intent);
+                                finish();
+                                System.exit(0);
+                            }
+                        });
+                        alertDialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Toast.makeText(MapsActivity.this, "Location Access is required", Toast.LENGTH_SHORT).show();
+                                dialog.cancel();
+                                finish();
+                                System.exit(0);
+                            }
+                        });
+                        alertDialog.show();
+
                         Toast.makeText(MapsActivity.this, "Error in detecting location, Turn on Location", Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -167,6 +208,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 }
             });
     }
+
+
 
     private void loadMap() {
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -202,7 +245,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
 
-            viewModel.getNearbyPlaces(loc, radius, type, BuildConfig.MAPS_API_KEY, "")
+            viewModel.getNearbyPlaces(loc, 10000, type, BuildConfig.MAPS_API_KEY, "")
                     .observe(this, new Observer<NearbySearchResponse>() {
                         @Override
                         public void onChanged(NearbySearchResponse nearbySearchResponse) {
@@ -214,7 +257,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                                         LatLng nearbyLocation = new LatLng(place.getGeometry().getLocation().getLat(),
                                                 place.getGeometry().getLocation().getLng());
-                                        //Log.d("Loc", String.valueOf(place.getName() + place.getGeometry().getLocation().getLat() + place.getGeometry().getLocation().getLng()));
+                                        //Log.d("Loc", String.valueOf(place.getName()));
                                         MarkerOptions markerOptions = new MarkerOptions().position(nearbyLocation).title(place.getName());
                                         Marker m = mMap.addMarker(markerOptions);
                                         m.setTag(place.getPlaceId());
@@ -248,7 +291,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                                             LatLng nearbyLocation = new LatLng(place.getGeometry().getLocation().getLat(),
                                                     place.getGeometry().getLocation().getLng());
-                                            //Log.d("Loc", String.valueOf(place.getName() + place.getGeometry().getLocation().getLat() + place.getGeometry().getLocation().getLng()));
+                                            //Log.d("Loc", String.valueOf(place.getName()));
                                             MarkerOptions markerOptions = new MarkerOptions().position(nearbyLocation).title(place.getName());
                                             Marker m = mMap.addMarker(markerOptions);
                                            m.setTag(place.getPlaceId());
@@ -288,7 +331,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
     @Override
-    public void getFilterValues(String type, Double radius) {
+    public void getFilterValues(String type, Float radius) {
 
         Searchradius= (int)(radius*1000);
         if(type!=null){

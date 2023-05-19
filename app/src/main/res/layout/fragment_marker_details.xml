@@ -88,7 +88,7 @@
             android:textColor="@color/black"
             android:id="@+id/rating_num"
 
-            android:text="@{`(`+place.userRatingsTotal+`)`}"
+            android:text="@{(place.userRatingsTotal==0)?`0`: (`(`+place.userRatingsTotal+`)`)}"
             app:layout_constraintStart_toEndOf="@id/place_rating"
             app:layout_constraintTop_toTopOf="@id/place_rating"
             android:layout_marginStart="12dp"

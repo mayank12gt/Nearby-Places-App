@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
@@ -13,6 +14,7 @@
         android:gravity="center_horizontal"
         android:padding="12dp"
         android:id="@+id/filter_heading"
+
 
         android:fontFamily="@font/poppins_semibold"
         app:layout_constraintTop_toTopOf="parent"
@@ -82,6 +84,8 @@ android:id="@+id/divider1"
         android:id="@+id/slider"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+app:labelBehavior="visible"
+
         android:layout_marginStart="12dp"
         android:layout_marginEnd="6dp"
         android:stepSize="0.5"
@@ -91,23 +95,61 @@ android:id="@+id/divider1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/search_radius_tv" />
 
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/appCompatTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="6dp"
+        android:fontFamily="@font/poppins_semibold"
+        android:text="1 KM"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="@id/slider"
+        app:layout_constraintTop_toBottomOf="@id/slider" />
 
     <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/appCompatTextView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="6dp"
+        android:fontFamily="@font/poppins_semibold"
+        android:text="5 KM"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="@id/slider"
+        app:layout_constraintTop_toBottomOf="@id/slider" />
+
+
+    <Button
         android:id="@+id/results_btn"
+        style="?attr/materialButtonOutlinedStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
-        android:background="@drawable/filter_btn_bg"
         android:fontFamily="@font/poppins_semibold"
-        android:padding="6dp"
-        android:text="See Results"
 
-        android:textColor="@color/black"
+        android:text="Apply"
+        android:background="@drawable/btn_filled_bg"
+        android:textColor="@color/white"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
 
-        app:layout_constraintTop_toBottomOf="@id/slider" />
+        app:layout_constraintTop_toBottomOf="@+id/appCompatTextView2" />
+
+    <Button
+        android:id="@+id/reset"
+        style="?attr/materialButtonOutlinedStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:background="@drawable/filter_btn_bg"
+        android:fontFamily="@font/poppins_semibold"
+        android:text="Reset"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/appCompatTextView" />
 
 
 

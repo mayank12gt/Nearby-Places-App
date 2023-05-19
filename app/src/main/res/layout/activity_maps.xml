@@ -37,12 +37,13 @@
         android:id="@+id/map"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".MapsActivity" />
+        android:layout_height="match_parent" />
 
-<androidx.appcompat.widget.AppCompatTextView
+<Button
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    style="?attr/materialButtonOutlinedStyle"
+
     android:padding="6dp"
    android:id="@+id/filter_btn"
     android:layout_margin="20dp"
@@ -57,13 +58,14 @@
 
 
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            style="?attr/materialButtonOutlinedStyle"
             android:padding="6dp"
             android:id="@+id/more"
             android:layout_margin="20dp"
-            android:text="Show More"
+            android:text="Show More Places"
             android:layout_gravity="bottom|center"
             android:background="@drawable/filter_btn_bg"
             android:textSize="20sp"

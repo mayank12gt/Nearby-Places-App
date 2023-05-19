@@ -5,18 +5,22 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
 <string-array name="types">
-    <item>Restaurant</item>
+
     <item>Bank</item>
+    <item>Gym</item>
+    <item>Hospital</item>
+    <item>Library</item>
+    <item>Museum</item>
     <item>Park</item>
     <item>Parking</item>
     <item>Police</item>
+    <item>Restaurant</item>
     <item>School</item>
     <item>Stadium</item>
-    <item>Hospital</item>
     <item>Supermarket</item>
-    <item>Gym</item>
-    <item>Museum</item>
-    <item>Library</item>
+
+
+
 
 </string-array>
 </resources>
