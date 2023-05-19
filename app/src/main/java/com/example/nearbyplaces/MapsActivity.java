@@ -16,11 +16,13 @@ import androidx.lifecycle.ViewModelProvider;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
@@ -113,8 +115,44 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         viewModel = new ViewModelProvider(this).get(MapsActivityViewModel.class);
         client = LocationServices.getFusedLocationProviderClient(this);
 
-        getLocation();
+        if(isNetworkAvailable(MapsActivity.this)==true){
+            getLocation();
+        }
+        else{
 
+            AlertDialog.Builder Dialog = new AlertDialog.Builder(MapsActivity.this);
+            Dialog.setTitle("No Connection");
+            Dialog.setMessage("No Internet Access. Go to settings and enable Internet ");
+            Dialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Intent intent = new Intent(Settings.ACTION_SETTINGS);
+                    MapsActivity.this.startActivity(intent);
+                    finish();
+                    System.exit(0);
+                }
+            });
+            Dialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Toast.makeText(MapsActivity.this, "Location Access is required", Toast.LENGTH_SHORT).show();
+                    dialog.cancel();
+                    finish();
+                    System.exit(0);
+                }
+            });
+            Dialog.show();
+
+        }
+
+
+
+    }
+
+    @SuppressLint("MissingPermission")
+    public boolean isNetworkAvailable(final Context context) {
+        final ConnectivityManager connectivityManager = ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE));
+        return connectivityManager.getActiveNetworkInfo() != null && connectivityManager.getActiveNetworkInfo().isConnected();
     }
 
     private void showFilterDialog() {
