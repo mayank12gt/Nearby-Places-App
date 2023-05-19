@@ -8,17 +8,19 @@
     <data>
             <variable
                 name="place"
-                type="com.example.nearbyplaces.model.NearbyPlace" />
+                type="com.example.nearbyplaces.model.PlaceDetails" />
 
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:minHeight="500dp"
+
 
 
         tools:context=".MarkerDetailsFragment">
+
+
 
         <ImageView
             android:layout_width="wrap_content"
@@ -31,7 +33,7 @@
             android:id="@+id/drag_handle"/>
 
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/place_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -45,7 +47,18 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/drag_handle"
             tools:text="Hari Mandir" />
-        <TextView
+
+        <com.google.android.material.divider.MaterialDivider
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+        android:id="@+id/divider1"
+            app:dividerThickness="2dp"
+
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/place_title" />
+
+
+        <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/black"
@@ -53,23 +66,23 @@
             android:layout_marginTop="12dp"
             android:text="Rating: "
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/place_title"
+            app:layout_constraintTop_toBottomOf="@id/divider1"
             android:layout_marginStart="12dp"
             android:fontFamily="@font/poppins_medium"
             android:textSize="22sp"/>
 
-        <RatingBar
+        <androidx.appcompat.widget.AppCompatRatingBar
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             style="?attr/ratingBarStyleIndicator"
             android:rating="@{place.rating.floatValue()}"
-            android:progressTint="@color/quantum_yellow"
+            android:progressTint="#E6D21F"
             android:id="@+id/place_rating"
             app:layout_constraintStart_toEndOf="@id/rating_txt"
             app:layout_constraintTop_toTopOf="@id/rating_txt"
             app:layout_constraintBottom_toBottomOf="@id/rating_txt"/>
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/black"
@@ -79,47 +92,179 @@
             app:layout_constraintStart_toEndOf="@id/place_rating"
             app:layout_constraintTop_toTopOf="@id/place_rating"
             android:layout_marginStart="12dp"
-            android:fontFamily="@font/poppins_medium"
+            android:fontFamily="@font/poppins"
             android:textSize="22sp"/>
-        <TextView
+
+
+        <com.denzcoskun.imageslider.ImageSlider
+            android:id="@+id/image_slider"
+            android:layout_margin="12dp"
+            android:layout_width="0dp"
+            app:iss_placeholder="@drawable/placeholder"
+
+            android:layout_height="250dp"
+            app:iss_auto_cycle="true"
+            app:iss_corner_radius="50"
+            app:iss_delay="2000"
+            app:iss_period="2000"
+        bind:loadImages="@{place.photos}"
+            app:iss_text_align="CENTER"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/rating_num" />
+
+        <com.google.android.material.divider.MaterialDivider
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/divider2"
+            app:dividerThickness="2dp"
+            android:layout_marginTop="9dp"
+
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/image_slider" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/info_layout"
+            android:orientation="vertical"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/divider2">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:layout_marginTop="12dp"
+            >
+
+        <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/place_addr_txt"
-            android:layout_marginTop="12dp"
+
             android:text="Address: "
             android:textColor="@color/black"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/rating_txt"
+
             android:layout_marginStart="12dp"
             android:fontFamily="@font/poppins_medium"
             android:textSize="22sp"/>
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/place_addr"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
 
-            android:fontFamily="@font/poppins_medium"
+            android:fontFamily="@font/poppins"
             android:maxWidth="300dp"
 
-            android:text="@{place.vicinity}"
+            android:text="@{place.formattedAddress}"
 
             android:textColor="@color/black"
             android:textSize="22sp"
-            app:layout_constraintStart_toEndOf="@id/place_addr_txt"
-            app:layout_constraintTop_toTopOf="@id/place_addr_txt" />
+             />
+        </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:layout_marginTop="12dp"
+                >
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/place_phone_txt"
+
+                    android:text="Phone No. : "
+                    android:textColor="@color/black"
+
+                    android:layout_marginStart="12dp"
+                    android:fontFamily="@font/poppins_medium"
+                    android:textSize="22sp"/>
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/place_phone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+
+                    android:fontFamily="@font/poppins"
+                    android:maxWidth="300dp"
+
+                    android:text="@{(place.internationalPhoneNumber==null)?`Not Available`:place.internationalPhoneNumber}"
+                     android:autoLink="phone"
+                    android:textColor="@color/black"
+                    android:textSize="22sp"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:layout_marginTop="12dp"
+                >
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/place_website_txt"
+
+                    android:text="Website: "
+                    android:textColor="@color/black"
+
+                    android:layout_marginStart="12dp"
+                    android:fontFamily="@font/poppins_medium"
+                    android:textSize="22sp"/>
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/place_website"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+
+                    android:fontFamily="@font/poppins"
+                    android:maxWidth="300dp"
+
+                    android:text="@{(place.website==null)?`Not Available`:place.website}"
+
+                    android:textColor="@color/black"
+                    android:textSize="22sp"
+                    android:autoLink="web"
+                    />
+            </LinearLayout>
 
 
-        <com.makeramen.roundedimageview.RoundedImageView
+
+
+        </LinearLayout>
+
+
+        <com.google.android.material.divider.MaterialDivider
             android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:id="@+id/place_image"
-                app:riv_corner_radius="6dp"
-            app:layout_constraintTop_toBottomOf="@id/place_addr"
+            android:layout_height="wrap_content"
+            android:id="@+id/divider3"
+            app:dividerThickness="2dp"
+ android:layout_marginTop="6dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/info_layout" />
+
+
+        <com.google.android.material.chip.ChipGroup
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/tag_chips"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp"
+            bind:loadTags="@{place.types}"
+            app:chipSpacing="0dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_margin="12dp"
-            bind:imageURL="@{place.photos.get(0).photoReference}"/>
+            app:layout_constraintTop_toBottomOf="@id/divider3"
+            android:layout_marginTop="6dp"
+            />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

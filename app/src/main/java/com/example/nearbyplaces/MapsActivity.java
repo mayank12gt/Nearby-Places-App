@@ -5,6 +5,7 @@ package com.example.nearbyplaces;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
@@ -13,10 +14,13 @@ import androidx.lifecycle.ViewModelProvider;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.AutoCompleteTextView;
 import android.widget.Toast;
 
 import com.example.nearbyplaces.model.NearbyPlace;
@@ -32,34 +36,60 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.example.nearbyplaces.databinding.ActivityMapsBinding;
-import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.libraries.places.api.Places;
-import com.google.android.libraries.places.api.model.Place;
-import com.google.android.libraries.places.api.model.PlaceLikelihood;
-import com.google.android.libraries.places.api.net.FindCurrentPlaceRequest;
-import com.google.android.libraries.places.api.net.FindCurrentPlaceResponse;
-import com.google.android.libraries.places.api.net.PlacesClient;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GetFilterValues {
     private final int LOCATION_PERMISSION_CODE=1;
+    private static final Integer REQUEST_CODE_SHOW_MORE = 2;
+    private static final Integer REQUEST_CODE_FILTER = 3;
+
+    int Searchradius=1000;
+    String est_type="";
+
     private GoogleMap mMap;
     private ActivityMapsBinding binding;
     FusedLocationProviderClient client;
     Location currentLocation;
     MapsActivityViewModel viewModel;
     MarkerDetailsFragment markerDetailsBtmSheet;
+    List<Marker> markers;
+    String next_page_token="";
+
+    AppCompatTextView filter_btn;
+    AppCompatTextView more_results;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         binding = ActivityMapsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        filter_btn = binding.filterBtn;
+        more_results = binding.more;
+        markers = new ArrayList<>();
+
+
+        more_results.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                shownearbyLocations(Searchradius,est_type,REQUEST_CODE_SHOW_MORE);
+
+            }
+        });
+
+
+        filter_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showFilterDialog();
+            }
+        });
+
 
 
         viewModel = new ViewModelProvider(this).get(MapsActivityViewModel.class);
@@ -69,21 +99,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
+    private void showFilterDialog() {
+        FilterDialogFragment dialogFragment = new FilterDialogFragment();
+
+      dialogFragment.show(getSupportFragmentManager(), dialogFragment.getTag());
+
+    }
+
     @SuppressLint("MissingPermission")
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        // Add a marker in Sydney and move the camera
+
         LatLng myLocation = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
         mMap.setMyLocationEnabled(true);
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myLocation,15));
@@ -92,8 +120,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(@NonNull Marker marker) {
-                //Toast.makeText(MapsActivity.this, marker.getTitle(), Toast.LENGTH_SHORT).show();
-                markerDetailsBtmSheet = new MarkerDetailsFragment((NearbyPlace) marker.getTag());
+
+                markerDetailsBtmSheet = new MarkerDetailsFragment((String) marker.getTag(),getApplicationContext());
 
                 markerDetailsBtmSheet.show(getSupportFragmentManager(), markerDetailsBtmSheet.getTag());
 
@@ -112,6 +140,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 && ContextCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,new String[]{ACCESS_FINE_LOCATION},LOCATION_PERMISSION_CODE);
+
             return;
         }
 
@@ -122,9 +151,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 public void onSuccess(Location location) {
                     if(location!=null){
                         currentLocation=location;
-                        shownearbyLocations();
+                        Toast.makeText(MapsActivity.this, "Location recieved", Toast.LENGTH_SHORT).show();
+                        shownearbyLocations(Searchradius,est_type,REQUEST_CODE_FILTER);
                         loadMap();
                     }
+                    else {
+                        Toast.makeText(MapsActivity.this, "Error in detecting location, Turn on Location", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+            task.addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Toast.makeText(MapsActivity.this, "Error in fetching location", Toast.LENGTH_SHORT).show();
                 }
             });
     }
@@ -140,48 +179,125 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if(requestCode==LOCATION_PERMISSION_CODE){
             if(grantResults.length>0 && grantResults[0]==PackageManager.PERMISSION_GRANTED){
+
                 getLocation();
             }
             else{
                 Toast.makeText(this, "Permission Denied", Toast.LENGTH_SHORT).show();
+                finish();
+                System.exit(0);
             }
         }
     }
 
 
-    public void shownearbyLocations() {
-        String loc=String.valueOf( currentLocation.getLatitude()+","+currentLocation.getLongitude());
-        Toast.makeText(this, loc, Toast.LENGTH_SHORT).show();
-        viewModel.getNearbyPlaces(loc,1500,BuildConfig.MAPS_API_KEY,"")
-        .observe(this, new Observer<NearbySearchResponse>() {
-            @Override
-            public void onChanged(NearbySearchResponse nearbySearchResponse) {
-              if(nearbySearchResponse!=null){
-                  if(nearbySearchResponse.getResults()!=null){
+    public void shownearbyLocations(int radius, String type, Integer REQUEST_CODE) {
+        String loc = String.valueOf(currentLocation.getLatitude() + "," + currentLocation.getLongitude());
 
-                      for (NearbyPlace place: nearbySearchResponse.getResults()) {
+        if (REQUEST_CODE == REQUEST_CODE_FILTER) {
 
-
-
-
-                          LatLng nearbyLocation = new LatLng(place.getGeometry().getLocation().getLat(),
-                                  place.getGeometry().getLocation().getLng());
-                         Log.d("Loc", String.valueOf(place.getName()+place.getGeometry().getLocation().getLat()+place.getGeometry().getLocation().getLng()));
-//
-                        MarkerOptions markerOptions = new MarkerOptions().position(nearbyLocation).title(place.getName());
-                        mMap.addMarker(markerOptions).setTag(place);
-
-                      }
-
-                  }
-              }
+            if (markers != null) {
+                removeMarkers(markers);
             }
-        });
 
+
+
+            viewModel.getNearbyPlaces(loc, radius, type, BuildConfig.MAPS_API_KEY, "")
+                    .observe(this, new Observer<NearbySearchResponse>() {
+                        @Override
+                        public void onChanged(NearbySearchResponse nearbySearchResponse) {
+                            if (nearbySearchResponse != null) {
+                                if (nearbySearchResponse.getResults() != null) {
+
+                                    for (NearbyPlace place : nearbySearchResponse.getResults()) {
+
+
+                                        LatLng nearbyLocation = new LatLng(place.getGeometry().getLocation().getLat(),
+                                                place.getGeometry().getLocation().getLng());
+                                        //Log.d("Loc", String.valueOf(place.getName() + place.getGeometry().getLocation().getLat() + place.getGeometry().getLocation().getLng()));
+                                        MarkerOptions markerOptions = new MarkerOptions().position(nearbyLocation).title(place.getName());
+                                        Marker m = mMap.addMarker(markerOptions);
+                                        m.setTag(place.getPlaceId());
+
+                                        markers.add(m);
+
+                                    }
+                                    next_page_token=nearbySearchResponse.getNextPageToken();
+
+
+                                }
+                            }
+                        }
+                    });
+
+
+        }
+        else if (REQUEST_CODE==REQUEST_CODE_SHOW_MORE){
+            if(next_page_token!=null) {
+
+
+                viewModel.getNearbyPlaces(loc, radius, type, BuildConfig.MAPS_API_KEY, next_page_token)
+                        .observe(this, new Observer<NearbySearchResponse>() {
+                            @Override
+                            public void onChanged(NearbySearchResponse nearbySearchResponse) {
+                                if (nearbySearchResponse != null) {
+                                    if (nearbySearchResponse.getResults() != null) {
+
+                                        for (NearbyPlace place : nearbySearchResponse.getResults()) {
+
+
+                                            LatLng nearbyLocation = new LatLng(place.getGeometry().getLocation().getLat(),
+                                                    place.getGeometry().getLocation().getLng());
+                                            //Log.d("Loc", String.valueOf(place.getName() + place.getGeometry().getLocation().getLat() + place.getGeometry().getLocation().getLng()));
+                                            MarkerOptions markerOptions = new MarkerOptions().position(nearbyLocation).title(place.getName());
+                                            Marker m = mMap.addMarker(markerOptions);
+                                           m.setTag(place.getPlaceId());
+
+                                            markers.add(m);
+
+                                        }
+                                        next_page_token = nearbySearchResponse.getNextPageToken();
+
+
+                                    }
+                                    else{
+                                        Toast.makeText(MapsActivity.this, "No Results for applied filter", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            }
+                        });
+
+
+            }
+            else{
+                Toast.makeText(this, "No more search results", Toast.LENGTH_SHORT).show();
+
+            }
+        }
 
     }
 
+    private void removeMarkers(List<Marker> markers) {
+        for (Marker m:markers) {
+            m.remove();
 
 
+        }
+        markers.clear();
+    }
+
+
+    @Override
+    public void getFilterValues(String type, Double radius) {
+
+        Searchradius= (int)(radius*1000);
+        if(type!=null){
+            est_type=type.toLowerCase();
+        }
+        else if(type==null){
+            est_type="";
+        }
+        shownearbyLocations(Searchradius,est_type,REQUEST_CODE_FILTER);
+    }
 }
 

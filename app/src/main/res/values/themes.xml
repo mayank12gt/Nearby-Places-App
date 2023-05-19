@@ -1,9 +1,9 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.NearbyPlaces" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+    <style name="Theme.NearbyPlaces" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/purple_500</item>
-        <item name="colorPrimaryVariant">@color/purple_700</item>
+        <item name="colorPrimaryVariant">@color/purple_1</item>
         <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/teal_200</item>
@@ -20,10 +20,27 @@
     <style name="AppBottomSheetDialogTheme"
         parent="Theme.Design.Light.BottomSheetDialog">
         <item name="bottomSheetStyle">@style/AppModalStyle</item>
+
     </style>
 
     <style name="AppModalStyle"
         parent="Widget.Design.BottomSheet.Modal">
         <item name="android:background">@drawable/bottom_sheet_bg</item>
+
+
+    </style>
+
+
+    <style name="Widget.TopAppBar"
+        parent="Widget.Material3.Toolbar">
+        <item name="android:fontFamily">@font/poppins_semibold</item>
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:textSize">24sp</item>
+    </style>
+
+    <style name="chipText" parent="TextAppearance.MaterialComponents.Chip">
+        <item name="android:textSize">14sp</item>
+        <item name="android:fontFamily">@font/poppins_medium</item>
+
     </style>
 </resources>

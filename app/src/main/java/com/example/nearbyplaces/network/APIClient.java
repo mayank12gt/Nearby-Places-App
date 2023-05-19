@@ -8,7 +8,7 @@ public class APIClient {
 
     public static synchronized Retrofit getRetrofit(){
         if(retrofit==null){
-            retrofit = new Retrofit.Builder().baseUrl("https://maps.googleapis.com/maps/api/place/nearbysearch/").
+            retrofit = new Retrofit.Builder().baseUrl("https://maps.googleapis.com/maps/api/place/").
                     addConverterFactory(GsonConverterFactory.create()).build();
         }
         return retrofit;

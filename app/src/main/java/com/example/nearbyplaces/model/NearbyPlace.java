@@ -1,7 +1,7 @@
 package com.example.nearbyplaces.model;
 
-import com.google.android.libraries.places.api.model.OpeningHours;
-import com.google.android.libraries.places.api.model.PlusCode;
+
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -45,12 +45,12 @@ public class NearbyPlace {
     @SerializedName("business_status")
     @Expose
     private String businessStatus;
-//    @SerializedName("opening_hours")
-//    @Expose
-//    private OpeningHours openingHours;
-//    @SerializedName("plus_code")
-//    @Expose
-//    private PlusCode plusCode;
+   @SerializedName("opening_hours")
+    @Expose
+    private OpeningHours openingHours;
+    @SerializedName("plus_code")
+    @Expose
+    private PlusCode plusCode;
     @SerializedName("rating")
     @Expose
     private Double rating;
@@ -157,21 +157,21 @@ public class NearbyPlace {
         this.businessStatus = businessStatus;
     }
 
-//    public OpeningHours getOpeningHours() {
-//        return openingHours;
-//    }
+    public OpeningHours getOpeningHours() {
+        return openingHours;
+    }
 
-//    public void setOpeningHours(OpeningHours openingHours) {
-//        this.openingHours = openingHours;
-//    }
+    public void setOpeningHours(OpeningHours openingHours) {
+        this.openingHours = openingHours;
+    }
 
-//    public PlusCode getPlusCode() {
-//        return plusCode;
-//    }
-//
-//    public void setPlusCode(PlusCode plusCode) {
-//        this.plusCode = plusCode;
-//    }
+    public PlusCode getPlusCode() {
+        return plusCode;
+    }
+
+    public void setPlusCode(PlusCode plusCode) {
+        this.plusCode = plusCode;
+    }
 
     public Double getRating() {
         return rating;

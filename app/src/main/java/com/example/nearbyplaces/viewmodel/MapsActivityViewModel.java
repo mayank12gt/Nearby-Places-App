@@ -17,7 +17,7 @@ private NearbyPlacesRepo repo;
         repo = new NearbyPlacesRepo();
     }
 
-    public LiveData<NearbySearchResponse> getNearbyPlaces(String location, int radius, String key,String pagetoken){
-        return repo.getNearbyPlaces(location, radius, key,pagetoken);
+    public LiveData<NearbySearchResponse> getNearbyPlaces(String location, int radius,String type, String key,String pagetoken){
+        return repo.getNearbyPlaces(location, radius,type, key,pagetoken);
     }
 }
