@@ -1,6 +1,10 @@
 package com.example.nearbyplaces;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
+import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -31,6 +35,7 @@ public class FilterDialogFragment extends DialogFragment {
 
     Button get_results;
     Button reset;
+
     String type;
     Slider radiusSlider;
     Float radius=1.0f;
@@ -45,6 +50,7 @@ FilterDialogFragment(int searchradius, String est_type){
 
 
 
+    @SuppressLint("MissingInflatedId")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -53,6 +59,9 @@ FilterDialogFragment(int searchradius, String est_type){
         get_results = v.findViewById(R.id.results_btn);
         radiusSlider = v.findViewById(R.id.slider);
         reset = v.findViewById(R.id.reset);
+
+
+
 
         types =getResources().getStringArray(R.array.types);
 
@@ -105,6 +114,8 @@ FilterDialogFragment(int searchradius, String est_type){
                 dismiss();
             }
         });
+
+
 
         return v;
     }

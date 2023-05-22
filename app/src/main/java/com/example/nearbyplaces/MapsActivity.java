@@ -177,7 +177,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public boolean onMarkerClick(@NonNull Marker marker) {
 
-                markerDetailsBtmSheet = new MarkerDetailsFragment((String) marker.getTag(),getApplicationContext());
+                markerDetailsBtmSheet = new MarkerDetailsFragment((String) marker.getTag(),currentLocation,getApplicationContext());
 
                 markerDetailsBtmSheet.show(getSupportFragmentManager(), markerDetailsBtmSheet.getTag());
 
