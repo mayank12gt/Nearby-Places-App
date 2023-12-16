@@ -3,11 +3,7 @@ Nearby Places is an android app that allows users to view nearby places of inter
 Implemented Dynamic Location Permission Access, marked user location and nearby areas of interest on the map, filter search results, implemented bottom sheet to display information about a place, get Directions on Google Maps to a place, MVVM architecture, used Google Maps SDK and Places Api. <br>
 
 
-## Demo Video
 
-
-
-https://github.com/mayank12gt/Nearby-Places-App/assets/96809211/e0fcd5d9-4895-4715-aa49-5eb62484d674
 
 
 
