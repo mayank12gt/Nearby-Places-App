@@ -15,17 +15,19 @@ Implemented Dynamic Location Permission Access, marked user location and nearby 
 
 
 ## Features
- 1.	Location Access: The app asks for user location at runtime using a dialog box. Only when the location access is provided, the app performs any operation.
+### 1.	Location Access:
+ The app asks for user location at runtime using a dialog box. Only when the location access is provided, the app performs any operation.
 
-2.	User Location and nearby places: User location and nearby places of interest are marked on the map screen. Initially 20 results are shown, the search radius is 1 Km, and there is no filter applied for the place type. The “SHOW MORE PLACES” button fetches more places for the current filter.
+### 2.	User Location and nearby places: 
+User location and nearby places of interest are marked on the map screen. Initially 20 results are shown, the search radius is 1 Km, and there is no filter applied for the place type. The “SHOW MORE PLACES” button fetches more places for the current filter.
 
-3.	Filter Screen:<br> 
+### 3.	Filter Screen:<br> 
 a.	Filters can be applied to the search using the FILTER button which displays a Filter Screen implemented as an alert dialog box.<br> 
 b.	It has a spinner for selecting establishment type from over 12 categories (Hospital, School etc.). Initially it is empty. It also has a slider for selecting search radius between 1Km to 5 Km. Initially the slider is set at 1 Km.<br> 
 c.	There is an APPLY button which applies the filters on the search results and shows relevant places on the map screen.<br> 
 d.	The RESET button can be used to reset the filter values to their default values.<br> 
 
-4.	Place Details:<br> 
+### 4.	Place Details:<br> 
 a.	Tapping the marker of any nearby place on the map opens the Details Screen implemented as a Bottom Sheet. It specifies the name of the place, its rating displayed as stars along with the number of ratings.<br> 
 b.	The “Get Directions” button launches the navigation screen in Google Maps app from the user’s location to the place.<br> 
 c.	The pictures of the place are displayed in an automatic image slider. The full address, phone number and website of the place are also displayed.<br> 
